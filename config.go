@@ -15,6 +15,7 @@ type Config struct {
 		Nick              string
 		Password          string
 		Channel           string
+		ChannelPassword   string
 		UseSlackCircumfix bool
 	}
 	Mattermost struct {

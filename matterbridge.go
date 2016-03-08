@@ -46,8 +46,13 @@ func (b *Bridge) createIRC(name string) *irc.Connection {
 	}
 	i.Connect(b.Config.IRC.Server + ":" + strconv.Itoa(b.Config.IRC.Port))
 	time.Sleep(time.Second)
-	log.Println("Joining", b.Config.IRC.Channel, "as", b.Config.IRC.Nick)
-	i.Join(b.Config.IRC.Channel)
+	if b.Config.IRC.ChannelPassword != "" {
+	    log.Println("Joining", b.Config.IRC.Channel, "as", b.Config.IRC.Nick, "with password", b.Config.IRC.ChannelPassword)
+	    i.Join(b.Config.IRC.Channel + " " + b.Config.IRC.ChannelPassword)
+    } else {
+	    log.Println("Joining", b.Config.IRC.Channel, "as", b.Config.IRC.Nick)
+    	i.Join(b.Config.IRC.Channel)
+    }
 	for _, val := range b.Config.Token {
 		log.Println("Joining", val.IRCChannel, "as", b.Config.IRC.Nick)
 		i.Join(val.IRCChannel)
