@@ -29,8 +29,9 @@ type Config struct {
 		Channel       string
 	}
 	Token map[string]*struct {
-		IRCChannel string
-		MMChannel  string
+		IRCChannel         string
+		IRCChannelPassword string
+		MMChannel          string
 	}
 	General struct {
 		GiphyAPIKey string

@@ -39,13 +39,14 @@ func NewBridge(name string, config *Config) *Bridge {
 
 func (b *Bridge) createIRC(name string) *irc.Connection {
 	i := irc.IRC(b.Config.IRC.Nick, b.Config.IRC.Nick)
+    i.Debug = true
 	i.UseTLS = b.Config.IRC.UseTLS
 	i.TLSConfig = &tls.Config{InsecureSkipVerify: b.Config.IRC.SkipTLSVerify}
 	if b.Config.IRC.Password != "" {
 		i.Password = b.Config.IRC.Password
 	}
 	i.Connect(b.Config.IRC.Server + ":" + strconv.Itoa(b.Config.IRC.Port))
-	time.Sleep(time.Second)
+	time.Sleep(15 * time.Second)
 	if b.Config.IRC.ChannelPassword != "" {
 	    log.Println("Joining", b.Config.IRC.Channel, "as", b.Config.IRC.Nick, "with password", b.Config.IRC.ChannelPassword)
 	    i.Join(b.Config.IRC.Channel + " " + b.Config.IRC.ChannelPassword)
@@ -54,8 +55,13 @@ func (b *Bridge) createIRC(name string) *irc.Connection {
     	i.Join(b.Config.IRC.Channel)
     }
 	for _, val := range b.Config.Token {
-		log.Println("Joining", val.IRCChannel, "as", b.Config.IRC.Nick)
-		i.Join(val.IRCChannel)
+    	if val.IRCChannelPassword != "" {
+    		log.Println("Joining", val.IRCChannel, "as", b.Config.IRC.Nick)
+    		i.Join(val.IRCChannel)
+        } else {
+    		log.Println("Joining", val.IRCChannel, "as", b.Config.IRC.Nick, "with password", val.IRCChannelPassword)
+    		i.Join(val.IRCChannel + " " + val.IRCChannelPassword)
+        }
 	}
 	i.AddCallback("PRIVMSG", b.handlePrivMsg)
 	i.AddCallback("CTCP_ACTION", b.handlePrivMsg)
@@ -68,10 +74,7 @@ func (b *Bridge) createIRC(name string) *irc.Connection {
 }
 
 func (b *Bridge) handlePrivMsg(event *irc.Event) {
-	msg := ""
-	if event.Code == "CTCP_ACTION" {
-		msg = event.Nick + " "
-	}
+	msg := "<" + event.Nick + "> "
 	msg += event.Message()
 	b.Send("irc-"+event.Nick, msg, b.getMMChannel(event.Arguments[0]))
 }
