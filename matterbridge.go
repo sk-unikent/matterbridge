@@ -3,7 +3,7 @@ package main
 import (
 	"crypto/tls"
 	"flag"
-	"github.com/42wim/matterbridge/matterhook"
+	"./matterhook"
 	"github.com/peterhellberg/giphy"
 	"github.com/thoj/go-ircevent"
 	"log"

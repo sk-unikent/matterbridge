@@ -135,6 +135,7 @@ func (c *Client) Receive() IMessage {
 // Send sends a msg to mattermost incoming webhooks URL.
 func (c *Client) Send(msg OMessage) error {
 	buf, err := json.Marshal(msg)
+
 	if err != nil {
 		return err
 	}
