@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"../matterhook-plus/bridge"
+	"../matterbridge-plus/bridge"
 	log "github.com/Sirupsen/logrus"
 )
 
